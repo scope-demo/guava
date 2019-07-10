@@ -16,6 +16,13 @@
   </description>
   <dependencies>
     <dependency>
+      <groupId>com.undefinedlabs.scope</groupId>
+      <artifactId>scope-agent</artifactId>
+      <version>${scope.agent.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>guava-testlib</artifactId>
       <version>${project.version}</version>
@@ -79,6 +86,9 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-javaagent:${settings.localRepository}/com/undefinedlabs/scope/scope-agent/${scope.agent.version}/scope-agent-${scope.agent.version}.jar</argLine>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
