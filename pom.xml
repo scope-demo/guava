@@ -18,7 +18,7 @@
     <animal.sniffer.version>1.18</animal.sniffer.version>
     <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scope.agent.version>0.1.7-beta.8</scope.agent.version>
+    <scope.agent.version>0.1.8-beta.1</scope.agent.version>
   </properties>
   <issueManagement>
     <system>GitHub Issues</system>
