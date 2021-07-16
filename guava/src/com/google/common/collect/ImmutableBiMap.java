@@ -18,6 +18,7 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.CollectPreconditions.checkNonnegative;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
@@ -30,6 +31,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import javax.annotation.CheckForNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link BiMap} whose contents will never change, with many other important properties detailed
@@ -39,6 +42,7 @@ import java.util.stream.Collectors;
  * @since 2.0
  */
 @GwtCompatible(serializable = true, emulated = true)
+@ElementTypesAreNonnullByDefault
 public abstract class ImmutableBiMap<K, V> extends ImmutableBiMapFauxverideShim<K, V>
     implements BiMap<K, V> {
 
@@ -54,9 +58,10 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableBiMapFauxverideShim<
    *
    * @since 21.0
    */
-  public static <T, K, V> Collector<T, ?, ImmutableBiMap<K, V>> toImmutableBiMap(
-      Function<? super T, ? extends K> keyFunction,
-      Function<? super T, ? extends V> valueFunction) {
+  public static <T extends @Nullable Object, K, V>
+      Collector<T, ?, ImmutableBiMap<K, V>> toImmutableBiMap(
+          Function<? super T, ? extends K> keyFunction,
+          Function<? super T, ? extends V> valueFunction) {
     return CollectCollectors.toImmutableBiMap(keyFunction, valueFunction);
   }
 
@@ -273,7 +278,9 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableBiMapFauxverideShim<
         case 0:
           return of();
         case 1:
-          return of(entries[0].getKey(), entries[0].getValue());
+          // requireNonNull is safe because the first `size` elements have been filled in.
+          Entry<K, V> onlyEntry = requireNonNull(entries[0]);
+          return of(onlyEntry.getKey(), onlyEntry.getValue());
         default:
           /*
            * If entries is full, or if hash flooding is detected, then this implementation may end
@@ -307,7 +314,9 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableBiMapFauxverideShim<
         case 0:
           return of();
         case 1:
-          return of(entries[0].getKey(), entries[0].getValue());
+          // requireNonNull is safe because the first `size` elements have been filled in.
+          Entry<K, V> onlyEntry = requireNonNull(entries[0]);
+          return of(onlyEntry.getKey(), onlyEntry.getValue());
         default:
           entriesUsed = true;
           return RegularImmutableBiMap.fromEntryArray(size, entries);
@@ -407,6 +416,7 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableBiMapFauxverideShim<
   @Deprecated
   @Override
   @DoNotCall("Always throws UnsupportedOperationException")
+  @CheckForNull
   public final V forcePut(K key, V value) {
     throw new UnsupportedOperationException();
   }

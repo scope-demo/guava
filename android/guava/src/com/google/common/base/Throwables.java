@@ -332,8 +332,7 @@ public final class Throwables {
    */
   @Beta
   @GwtIncompatible // Class.cast(Object)
-  @SuppressWarnings("nullness")
-  // TODO(cpovirk): Add @CheckForNull after updating callers.
+  @CheckForNull
   public static <X extends Throwable> X getCauseAs(
       Throwable throwable, Class<X> expectedCauseType) {
     try {
